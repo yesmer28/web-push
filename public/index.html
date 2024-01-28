@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notificaciones Push</title>
+</head>
+<body>
+  <h1 style="text-align: center;">Notificaciones Push</h1>
+
+  <script>
+    subscribe()
+    async function subscribe() {
+      const registration = await navigator.serviceWorker.register('./worker.js', {scope: "/"});
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: 'BKl-a66AvLGNRDYfigPvvUWu4Q3Yyx2JoWfINw_CDSRXEEZqsnGGUS0YmFhjxsjVk9PDSVM_ipV6zmoiJJuqDMQ',
+      });
+
+      // Enviar la suscripción al servidor
+      await fetch('/subscribe', {
+        method: 'POST',
+        body: JSON.stringify(subscription),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+    }
+  </script>
+</body>
+</html>
